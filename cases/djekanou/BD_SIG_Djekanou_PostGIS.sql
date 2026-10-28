@@ -4,6 +4,9 @@
 --            AnalyseSI 0.80 (syntaxe PostgreSQL) à partir du MCD validé.
 -- Partie 2 : colonnes géométriques ajoutées pour PostGIS (EPSG:32630),
 --            AnalyseSI ne gérant pas les types géométriques.
+-- Correction manuelle : dans les tables d'association (dessert, traverse,
+--            alimente), id_quartier est une clé étrangère, typée INT
+--            au lieu du SERIAL produit par AnalyseSI.
 -- =====================================================================
 
 CREATE EXTENSION IF NOT EXISTS postgis;
@@ -117,19 +120,19 @@ CREATE TABLE EQUIPEMENT (id_equipement SERIAL NOT NULL,
     PRIMARY KEY (id_equipement));
 
 DROP TABLE IF EXISTS dessert CASCADE;
-CREATE TABLE dessert (id_quartier SERIAL NOT NULL,
+CREATE TABLE dessert (id_quartier INT NOT NULL,
     id_voie INT NOT NULL,
     PRIMARY KEY (id_quartier,
      id_voie));
 
 DROP TABLE IF EXISTS traverse CASCADE;
-CREATE TABLE traverse (id_quartier SERIAL NOT NULL,
+CREATE TABLE traverse (id_quartier INT NOT NULL,
     id_hydro INT NOT NULL,
     PRIMARY KEY (id_quartier,
      id_hydro));
 
 DROP TABLE IF EXISTS alimente CASCADE;
-CREATE TABLE alimente (id_quartier SERIAL NOT NULL,
+CREATE TABLE alimente (id_quartier INT NOT NULL,
     id_reseau_elec INT NOT NULL,
     PRIMARY KEY (id_quartier,
      id_reseau_elec));
