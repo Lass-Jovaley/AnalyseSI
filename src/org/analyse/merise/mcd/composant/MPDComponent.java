@@ -202,7 +202,7 @@ public class MPDComponent extends ZGraphique {
                     }
                 }
 
-                String w_info = (ent.getForeignKeys().containsKey(info)) ? info.substring(info.indexOf("_")+1) : info ;
+                String w_info = cleDictionnaire(data, ent, info);
 
                 try {
                     type = (String) data.getValue(w_info, DictionnaireTable.TYPE);
@@ -271,7 +271,7 @@ public class MPDComponent extends ZGraphique {
                 text += info + " " + type;
 
                 try {
-                    w_info = (ent.getForeignKeys().containsKey(info)) ? info.substring(info.indexOf("_")+1) : info ;
+                    w_info = cleDictionnaire(data, ent, info);
 
                     if (((Integer) data.getValue(w_info, DictionnaireTable.SIZE)).intValue() != 0
                             && !sql.getTypesWithoutSize().contains(data.getValue(w_info, DictionnaireTable.TYPE))) {
@@ -412,5 +412,17 @@ public class MPDComponent extends ZGraphique {
     public void clear() {
         foreignKeys.clear();
         super.clearAll();
+    }
+
+    /**
+     * Retrouve le code du dictionnaire correspondant a une colonne.
+     * Une cle etrangere est d'abord cherchee sous son nom exact (ex. id_commune),
+     * puis, a defaut, sans le prefixe ajoute par AnalyseSI (ex. lot_id_lot -> id_lot).
+     */
+    private static String cleDictionnaire(DictionnaireTable data, MPDEntite ent, String info) {
+        if (!ent.getForeignKeys().containsKey(info)) return info;
+        Object t = data.getValue(info, DictionnaireTable.TYPE);
+        if (t != null && !String.valueOf(t).contains("NOT FOUND")) return info;
+        return info.substring(info.indexOf("_") + 1);
     }
 }

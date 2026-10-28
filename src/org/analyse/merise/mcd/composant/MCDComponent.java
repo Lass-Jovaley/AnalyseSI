@@ -648,6 +648,17 @@ public class MCDComponent extends ZGraphique implements Observer {
 							mpdLien.setElement(ent, Constantes.MCDENTITE2 );
 						}
 					}
+					// Correctif : le lien d'une association (1,1)/(0,1) doit aussi etre ajoute au MPD
+					if (mpdLien.getElement(Constantes.MCDENTITE1) != null && mpdLien.getElement(Constantes.MCDENTITE2) != null) {
+						// la fleche doit partir de la table qui porte la cle etrangere vers la table referencee
+						MPDEntite e1 = (MPDEntite) mpdLien.getElement(Constantes.MCDENTITE1);
+						MPDEntite e2 = (MPDEntite) mpdLien.getElement(Constantes.MCDENTITE2);
+						if (e1.getForeignKeys().containsValue(e2.getName()) && !e2.getForeignKeys().containsValue(e1.getName())) {
+							mpdLien.setElement(e2, Constantes.MCDENTITE1);
+							mpdLien.setElement(e1, Constantes.MCDENTITE2);
+						}
+						mpd.addLien(mpdLien);
+					}
 					
 				} 
 				
